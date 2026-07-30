@@ -52,7 +52,7 @@ export default function Dashboard() {
                 <item.icon size={16} style={{ color: item.color }} />
               </div>
             </div>
-            <p className="text-xl font-bold text-[#1D1D1F]">{typeof item.value === 'number' && item.label !== 'Revenue' ? item.value : item.value}</p>
+            <p className="text-lg md:text-xl font-bold text-[#1D1D1F] truncate">{typeof item.value === 'number' && item.label !== 'Revenue' ? item.value : item.value}</p>
           </div>
         ))}
       </div>

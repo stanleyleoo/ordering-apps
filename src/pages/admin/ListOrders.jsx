@@ -64,49 +64,51 @@ export default function ListOrders() {
           const nextSt = nextStatus(order.status)
 
           return (
-            <div key={order.id} className="glass-card p-4">
-              <div className="flex justify-between items-start mb-3">
-                <div>
-                  <div className="flex items-center gap-2">
-                    <h3 className="font-bold text-[#1D1D1F]">{order.id}</h3>
-                    <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-medium ${sColor.bg} ${sColor.text} flex items-center gap-1`}>
-                      <StatusIcon size={12} /> {statusLabels[order.status]}
-                    </span>
+            <div key={order.id} className="glass-card p-4 w-full overflow-hidden">
+              <div className="flex flex-col gap-2 mb-3">
+                <div className="flex items-start justify-between gap-2 min-w-0">
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-center gap-2 flex-wrap min-w-0">
+                      <h3 className="font-bold text-[#1D1D1F] text-sm">{order.id}</h3>
+                      <span className={`px-2 py-0.5 rounded-full text-[10px] font-medium ${sColor.bg} ${sColor.text} flex items-center gap-1`}>
+                        <StatusIcon size={11} /> {statusLabels[order.status]}
+                      </span>
+                    </div>
+                    <p className="text-xs text-[#6E6E73] mt-0.5 truncate">{order.customer.name} &middot; {order.customer.phone}</p>
                   </div>
-                  <p className="text-sm text-[#6E6E73] mt-0.5">{order.customer.name} \u2022 {order.customer.phone}</p>
+                  <span className="text-sm md:text-base font-bold text-[#E8652D] shrink-0">Rp {order.total.toLocaleString()}</span>
                 </div>
-                <span className="text-lg font-bold text-[#E8652D]">Rp {order.total.toLocaleString()}</span>
               </div>
               <div className="space-y-1 mb-3">
                 {order.items.map((item, i) => (
-                  <div key={i} className="flex justify-between text-sm">
-                    <span className="text-[#1D1D1F]"><span className="font-medium">{item.qty}x</span> {item.name}</span>
-                    <span className="text-[#6E6E73]">Rp {(item.price * item.qty).toLocaleString()}</span>
+                  <div key={i} className="flex justify-between gap-2 text-xs md:text-sm">
+                    <span className="text-[#1D1D1F] truncate min-w-0"><span className="font-medium">{item.qty}x</span> {item.name}</span>
+                    <span className="text-[#6E6E73] shrink-0">Rp {(item.price * item.qty).toLocaleString()}</span>
                   </div>
                 ))}
               </div>
               <div className="pt-3 border-t border-white/20 space-y-2">
-                <div className="flex justify-between items-center">
-                  <span className="text-xs text-[#6E6E73]">{new Date(order.timestamp).toLocaleString()} &middot; {order.paymentMethod}</span>
-                  {order.status !== 'completed' && order.status !== 'cancelled' && (
-                    <button onClick={() => setConfirm({ orderId: order.id, nextStatus: nextSt, label: order.status === 'pending' ? 'Start Prepare' : 'Complete' })}
-                      className={`flex items-center gap-1 py-2 px-4 rounded-full text-xs font-medium transition-all ${
-                        order.status === 'pending'
-                          ? 'bg-[#4F46E5]/10 text-[#4F46E5] hover:bg-[#4F46E5]/20'
-                          : 'bg-[#2D9B7A]/10 text-[#2D9B7A] hover:bg-[#2D9B7A]/20'
-                      }`}>
-                      {order.status === 'pending' ? <><ChefHat size={14} /> Start Prepare</> : <><CheckCircle size={14} /> Complete</>}
-                    </button>
-                  )}
-                </div>
-                {order.status === 'pending' && (
-                  <div className="flex justify-end">
-                    <button onClick={() => setConfirm({ orderId: order.id, nextStatus: 'cancelled', label: 'Cancel' })}
-                      className="flex items-center gap-1 py-1.5 px-3 rounded-full text-xs font-medium text-[#E74C3C] bg-[#E74C3C]/10 hover:bg-[#E74C3C]/20 transition-all">
-                      <XCircle size={14} /> Cancel Order
-                    </button>
+                <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 min-w-0">
+                  <span className="text-[10px] sm:text-xs text-[#6E6E73]">{new Date(order.timestamp).toLocaleString()} &middot; {order.paymentMethod}</span>
+                  <div className="flex items-center gap-2 self-end sm:self-auto shrink-0">
+                    {order.status !== 'completed' && order.status !== 'cancelled' && (
+                      <button onClick={() => setConfirm({ orderId: order.id, nextStatus: nextSt, label: order.status === 'pending' ? 'Start Prepare' : 'Complete' })}
+                        className={`flex items-center gap-1 py-1.5 sm:py-2 px-3 sm:px-4 rounded-full text-[10px] sm:text-xs font-medium transition-all ${
+                          order.status === 'pending'
+                            ? 'bg-[#4F46E5]/10 text-[#4F46E5] hover:bg-[#4F46E5]/20'
+                            : 'bg-[#2D9B7A]/10 text-[#2D9B7A] hover:bg-[#2D9B7A]/20'
+                        }`}>
+                        {order.status === 'pending' ? <><ChefHat size={13} /> Start Prepare</> : <><CheckCircle size={13} /> Complete</>}
+                      </button>
+                    )}
+                    {order.status === 'pending' && (
+                      <button onClick={() => setConfirm({ orderId: order.id, nextStatus: 'cancelled', label: 'Cancel' })}
+                        className="flex items-center gap-1 py-1.5 px-3 rounded-full text-[10px] sm:text-xs font-medium text-[#E74C3C] bg-[#E74C3C]/10 hover:bg-[#E74C3C]/20 transition-all">
+                        <XCircle size={13} /> Cancel
+                      </button>
+                    )}
                   </div>
-                )}
+                </div>
               </div>
             </div>
           )
