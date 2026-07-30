@@ -152,12 +152,14 @@ function CartDrawer({ open, onClose }) {
   return (
     <div className="fixed inset-0 z-50 flex items-end justify-center">
       <div className="absolute inset-0 bg-black/20 backdrop-blur-sm" onClick={() => { if (step === 'cart') onClose(); else setStep('cart') }} />
-      <div className="relative w-full max-w-md bg-white/80 backdrop-blur-2xl rounded-t-3xl p-5 max-h-[85dvh] overflow-y-auto animate-slideUp shadow-2xl" style={{ borderTop: '1px solid rgba(255,255,255,0.4)' }}>
+      <div className="relative w-full max-w-md bg-white/80 backdrop-blur-2xl rounded-t-3xl p-5 max-h-[85dvh] overflow-y-auto animate-slideUp shadow-2xl pb-safe" style={{ borderTop: '1px solid rgba(255,255,255,0.4)' }}>
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-lg font-bold text-[#1D1D1F]">{step === 'cart' ? 'Your Order' : 'Checkout'}</h2>
           <button onClick={() => { if (step === 'cart') onClose(); else setStep('cart') }} className="p-1 rounded-full hover:bg-white/30"><X size={20} /></button>
         </div>
-        {step === 'cart' ? renderCart() : renderCheckout()}
+        <div className={step === 'checkout' ? 'pb-16' : ''}>
+          {step === 'cart' ? renderCart() : renderCheckout()}
+        </div>
       </div>
     </div>
   )
@@ -274,7 +276,7 @@ export default function OrderMenu() {
 
       {cartCount > 0 && (
         <button onClick={() => setShowCart(true)}
-          className="fixed bottom-20 left-1/2 -translate-x-1/2 z-30 glass px-5 py-3 rounded-full shadow-2xl flex items-center gap-3 animate-slideUp hover:bg-white/30 transition max-w-[90vw]"
+          className="fixed bottom-24 left-1/2 -translate-x-1/2 z-50 glass px-5 py-3 rounded-full shadow-2xl flex items-center gap-3 animate-slideUp hover:bg-white/30 transition max-w-[90vw] mb-safe"
           style={{ backdropFilter: 'blur(24px)' }}
         >
           <div className="relative">

@@ -62,12 +62,12 @@ export default function MasterCustomer() {
       {editing && (
         <div className="fixed inset-0 z-50 flex items-end justify-center">
           <div className="absolute inset-0 bg-black/20 backdrop-blur-sm" onClick={() => setEditing(null)} />
-          <div className="relative w-full max-w-md bg-white/80 backdrop-blur-2xl rounded-t-3xl p-5 animate-slideUp">
+          <div className="relative w-full max-w-md bg-white/80 backdrop-blur-2xl rounded-t-3xl p-5 max-h-[85dvh] overflow-y-auto animate-slideUp">
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-lg font-bold text-[#1D1D1F]">Edit Customer</h2>
               <button onClick={() => setEditing(null)} className="p-1 rounded-full hover:bg-white/30"><X size={20} /></button>
             </div>
-            <div className="space-y-3">
+            <div className="space-y-3 pb-16">
               <div>
                 <label className="text-xs font-medium text-[#6E6E73] mb-1 block">Name *</label>
                 <input type="text" value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} className="input-glass" />

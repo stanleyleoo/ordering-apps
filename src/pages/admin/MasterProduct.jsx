@@ -92,7 +92,7 @@ export default function MasterProduct() {
               <h2 className="text-lg font-bold text-[#1D1D1F]">{editing ? 'Edit Product' : 'New Product'}</h2>
               <button onClick={() => setShowForm(false)} className="p-1 rounded-full hover:bg-white/30"><X size={20} /></button>
             </div>
-            <div className="space-y-3">
+            <div className="space-y-3 pb-16">
               <div>
                 <label className="text-xs font-medium text-[#6E6E73] mb-1 block">Name *</label>
                 <input type="text" value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} className="input-glass" placeholder="Product name" />
