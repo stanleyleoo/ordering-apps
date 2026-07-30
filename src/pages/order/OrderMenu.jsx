@@ -1,6 +1,6 @@
-import { useState, useMemo } from 'react'
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { ShoppingCart, Plus, Minus, X, ChevronRight, Phone, User, Store } from 'lucide-react'
+import { ShoppingCart, Plus, Minus, X, ChevronRight, Phone, User, Store, Minus as MinusIcon } from 'lucide-react'
 import { useApp } from '../../contexts/AppContext'
 import { categories, paymentMethods } from '../../data/mockData'
 
@@ -163,9 +163,60 @@ function CartDrawer({ open, onClose }) {
   )
 }
 
+function ProductDetail({ product, onClose }) {
+  const { dispatch } = useApp()
+  const [qty, setQty] = useState(1)
+
+  const handleAdd = () => {
+    dispatch({ type: 'ADD_TO_CART', payload: { ...product, qty: 0 } })
+    for (let i = 0; i < qty; i++) {
+      dispatch({ type: 'ADD_TO_CART', payload: product })
+    }
+    onClose()
+  }
+
+  if (!product) return null
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-end justify-center">
+      <div className="absolute inset-0 bg-black/20 backdrop-blur-sm" onClick={onClose} />
+      <div className="relative w-full max-w-md bg-white/80 backdrop-blur-2xl rounded-t-3xl overflow-hidden animate-slideUp shadow-2xl" style={{ borderTop: '1px solid rgba(255,255,255,0.4)' }}>
+        <div className="relative">
+          <img src={product.image} alt={product.name} className="w-full aspect-square object-cover" />
+          <button onClick={onClose} className="absolute top-3 right-3 w-9 h-9 rounded-full bg-black/20 backdrop-blur-sm text-white flex items-center justify-center hover:bg-black/30 transition">
+            <X size={18} />
+          </button>
+          {product.bestseller && (
+            <span className="absolute top-3 left-3 bg-[#D4A83C] text-white text-xs font-bold px-3 py-1 rounded-full shadow">Best Seller</span>
+          )}
+        </div>
+        <div className="p-5 space-y-4">
+          <div>
+            <h2 className="text-xl font-bold text-[#1D1D1F]">{product.name}</h2>
+            <p className="text-sm text-[#6E6E73] mt-1.5 leading-relaxed">{product.description}</p>
+            <p className="text-xs text-[#6E6E73] mt-1">{product.id} &middot; {product.category}</p>
+          </div>
+          <div className="flex items-center justify-between pt-2 border-t border-white/20">
+            <span className="text-2xl font-bold text-[#E8652D]">Rp {product.price.toLocaleString()}</span>
+            <div className="flex items-center gap-3">
+              <button onClick={() => setQty(q => Math.max(1, q - 1))} className="w-10 h-10 rounded-full bg-white/30 flex items-center justify-center hover:bg-white/50 transition"><MinusIcon size={18} /></button>
+              <span className="w-8 text-center font-bold text-lg text-[#1D1D1F]">{qty}</span>
+              <button onClick={() => setQty(q => q + 1)} className="w-10 h-10 rounded-full bg-white/30 flex items-center justify-center hover:bg-white/50 transition"><Plus size={18} /></button>
+            </div>
+          </div>
+          <button onClick={handleAdd} className="btn-primary w-full flex items-center justify-center gap-2 py-3.5">
+            <ShoppingCart size={18} /> Add to Cart &mdash; Rp {(product.price * qty).toLocaleString()}
+          </button>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 export default function OrderMenu() {
   const { state, dispatch } = useApp()
   const [showCart, setShowCart] = useState(false)
+  const [selectedProduct, setSelectedProduct] = useState(null)
 
   const filtered = state.activeCategory === 'All'
     ? state.products
@@ -200,13 +251,13 @@ export default function OrderMenu() {
 
       <div className="grid grid-cols-2 gap-3 animate-fadeIn">
         {filtered.map(product => (
-          <div key={product.id} className="glass-card overflow-hidden group">
+          <div key={product.id} onClick={() => setSelectedProduct(product)} className="glass-card overflow-hidden group cursor-pointer active:scale-[0.98] transition-transform">
             <div className="relative aspect-square overflow-hidden">
               <img src={product.image} alt={product.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
               {product.bestseller && (
                 <span className="absolute top-2 left-2 bg-[#D4A83C] text-white text-[10px] font-bold px-2 py-0.5 rounded-full shadow">Best Seller</span>
               )}
-              <button onClick={() => dispatch({ type: 'ADD_TO_CART', payload: product })}
+              <button onClick={(e) => { e.stopPropagation(); dispatch({ type: 'ADD_TO_CART', payload: product }) }}
                 className="absolute bottom-2 right-2 w-10 h-10 rounded-full bg-[#E8652D] text-white flex items-center justify-center shadow-lg hover:bg-[#D4551F] transition active:scale-90"
               >
                 <Plus size={18} />
@@ -235,6 +286,7 @@ export default function OrderMenu() {
         </button>
       )}
 
+      <ProductDetail product={selectedProduct} onClose={() => setSelectedProduct(null)} />
       <CartDrawer open={showCart} onClose={() => setShowCart(false)} />
     </div>
   )

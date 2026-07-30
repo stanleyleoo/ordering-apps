@@ -149,6 +149,11 @@ src/
 5. **Category Management** — CRUD categories, drag-drop reorder, visibility toggle
 6. **Order History & Re-order** — customer lookup past orders, one-tap re-order
 
+## GitHub
+- **Repo URL:** https://github.com/stanleyleoo/ordering-apps
+- **Branch:** `main`
+- **Last push:** Initial commit with all scaffolded files
+
 ## Running the App
 ```bash
 npm install
