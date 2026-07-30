@@ -9,7 +9,14 @@ import MasterProduct from './pages/admin/MasterProduct'
 import MasterCustomer from './pages/admin/MasterCustomer'
 import ListOrders from './pages/admin/ListOrders'
 import Dashboard from './pages/admin/Dashboard'
+import PwaInstallPrompt from './components/PwaInstallPrompt'
 import './index.css'
+
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js')
+  })
+}
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
@@ -25,6 +32,7 @@ createRoot(document.getElementById('root')).render(
             <Route path="/admin/orders" element={<ListOrders />} />
             <Route path="/admin" element={<Dashboard />} />
           </Routes>
+          <PwaInstallPrompt />
         </App>
       </AppProvider>
     </BrowserRouter>

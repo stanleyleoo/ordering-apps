@@ -154,6 +154,18 @@ src/
 - **Repo URL:** https://github.com/stanleyleoo/ordering-apps
 - **Branch:** `main`
 - **Last push:** Initial commit with all scaffolded files
+- **Note:** Always ask before pushing to GitHub — do not push automatically.
+
+## PWA
+- **Web App Manifest:** `/site.webmanifest` — name, icons, standalone display, orange theme
+- **Service Worker:** `/sw.js` — caches app shell (HTML, manifest, icons) for basic offline support
+- **Install Prompt:** `PwaInstallPrompt` component — glass bottom sheet that shows:
+  - **Android:** Captures `beforeinstallprompt` event → "Install App" button triggers native prompt
+  - **iOS:** Shows instructions to tap Share → Add to Home Screen (auto-shows after 3s on first visit)
+  - Dismissed permanently via "Don't show again" link (saved to localStorage)
+  - Hidden automatically if already running in standalone mode
+- **Icons:** Coffee cup design in `/public/icons/` (SVG, 192x192 PNG, 512x512 PNG)
+- **Meta tags:** `theme-color`, `apple-mobile-web-app-capable`, `apple-touch-icon` in `index.html`
 
 ## Running the App
 ```bash
