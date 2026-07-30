@@ -34,6 +34,7 @@ A web-based self-ordering system for cafes (food, beverages, desserts). Customer
 ### Order Menu (`/order`)
 - Category tabs: All, Food, Beverage, Dessert
 - Product cards in 2-column grid with image, name, description, price, bestseller badge
+- **Tap any product card** → slide-up detail sheet with large image, full description, qty selector (+/-), and "Add to Cart" button showing total price
 - Floating cart FAB at bottom showing item count and total
 - Cart drawer slides up from bottom with qty controls
 - Checkout step: phone input → auto-detect customer → name prompt (new) or auto-fill (existing) → payment method selection → place order
