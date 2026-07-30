@@ -1,11 +1,12 @@
 import { useState } from 'react'
-import { Pencil, Trash2, X, Save, Search } from 'lucide-react'
+import { Plus, Pencil, Trash2, X, Save, Search } from 'lucide-react'
 import { useApp } from '../../contexts/AppContext'
 
 export default function MasterCustomer() {
   const { state, dispatch } = useApp()
   const [search, setSearch] = useState('')
   const [editing, setEditing] = useState(null)
+  const [showForm, setShowForm] = useState(false)
 
   const filtered = state.customers.filter(c =>
     c.name.toLowerCase().includes(search.toLowerCase()) ||
@@ -20,6 +21,19 @@ export default function MasterCustomer() {
     setForm({ name: c.name, phone: c.phone, email: c.email || '' })
   }
 
+  const openNew = () => {
+    setShowForm(true)
+    setForm({ name: '', phone: '', email: '' })
+  }
+
+  const handleAdd = () => {
+    if (!form.name || !form.phone) return
+    const nextNum = state.customers.length + 1
+    const id = `CUS-${String(nextNum).padStart(3, '0')}`
+    dispatch({ type: 'ADD_CUSTOMER', payload: { id, ...form } })
+    setShowForm(false)
+  }
+
   const handleSave = () => {
     if (!form.name || !form.phone) return
     dispatch({ type: 'UPDATE_CUSTOMER', payload: { ...editing, ...form } })
@@ -29,10 +43,8 @@ export default function MasterCustomer() {
   return (
     <div>
       <div className="flex justify-between items-center mb-4">
-        <div>
-          <h1 className="text-xl font-bold text-[#1D1D1F]">Customers</h1>
-          <p className="text-sm text-[#6E6E73]">{state.customers.length} registered</p>
-        </div>
+        <p className="text-sm text-[#6E6E73]">{state.customers.length} registered</p>
+        <button onClick={openNew} className="btn-primary flex items-center gap-2 text-sm"><Plus size={16} /> Add Customer</button>
       </div>
 
       <div className="relative mb-4">
@@ -58,6 +70,33 @@ export default function MasterCustomer() {
           </div>
         ))}
       </div>
+
+      {showForm && (
+        <div className="fixed inset-0 z-50 flex items-end justify-center">
+          <div className="absolute inset-0 bg-black/20 backdrop-blur-sm" onClick={() => setShowForm(false)} />
+          <div className="relative w-full max-w-md bg-white/80 backdrop-blur-2xl rounded-t-3xl p-5 max-h-[85dvh] overflow-y-auto animate-slideUp">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-lg font-bold text-[#1D1D1F]">New Customer</h2>
+              <button onClick={() => setShowForm(false)} className="p-1 rounded-full hover:bg-white/30"><X size={20} /></button>
+            </div>
+            <div className="space-y-3 pb-16">
+              <div>
+                <label className="text-xs font-medium text-[#6E6E73] mb-1 block">Name *</label>
+                <input type="text" value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} className="input-glass" placeholder="e.g. John Doe" />
+              </div>
+              <div>
+                <label className="text-xs font-medium text-[#6E6E73] mb-1 block">Phone *</label>
+                <input type="tel" value={form.phone} onChange={e => setForm(f => ({ ...f, phone: e.target.value }))} className="input-glass" placeholder="e.g. 08123456789" />
+              </div>
+              <div>
+                <label className="text-xs font-medium text-[#6E6E73] mb-1 block">Email</label>
+                <input type="email" value={form.email} onChange={e => setForm(f => ({ ...f, email: e.target.value }))} className="input-glass" placeholder="e.g. john@email.com" />
+              </div>
+              <button onClick={handleAdd} className="btn-primary w-full flex items-center justify-center gap-2"><Plus size={18} /> Add Customer</button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {editing && (
         <div className="fixed inset-0 z-50 flex items-end justify-center">

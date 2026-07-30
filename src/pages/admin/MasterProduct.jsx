@@ -55,10 +55,7 @@ export default function MasterProduct() {
   return (
     <div>
       <div className="flex justify-between items-center mb-4">
-        <div>
-          <h1 className="text-xl font-bold text-[#1D1D1F]">Products</h1>
-          <p className="text-sm text-[#6E6E73]">{state.products.length} items</p>
-        </div>
+        <p className="text-sm text-[#6E6E73]">{state.products.length} items</p>
         <button onClick={openNew} className="btn-primary flex items-center gap-2 text-sm"><Plus size={16} /> Add Product</button>
       </div>
 

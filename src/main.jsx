@@ -32,8 +32,8 @@ createRoot(document.getElementById('root')).render(
             <Route path="/admin/orders" element={<ListOrders />} />
             <Route path="/admin" element={<Dashboard />} />
           </Routes>
-          <PwaInstallPrompt />
         </App>
+        <PwaInstallPrompt />
       </AppProvider>
     </BrowserRouter>
   </StrictMode>

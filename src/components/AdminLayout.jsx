@@ -44,9 +44,24 @@ export default function AdminLayout({ children }) {
         </div>
       </aside>
 
-      <main className="flex-1 overflow-y-auto min-h-dvh pb-20 md:pb-4">
-        <div className="max-w-6xl mx-auto p-4 md:p-6">
-          {children}
+      <main className="flex-1 min-h-dvh pb-20 md:pb-4 flex flex-col">
+        <div className="sticky top-0 z-30 glass rounded-none mx-0 px-4 md:px-6 py-3" style={{ backdropFilter: 'blur(24px)' }}>
+          <div className="max-w-6xl mx-auto flex items-center justify-between">
+            <h1 className="font-bold text-lg text-[#1D1D1F]">
+              {loc.pathname === '/admin' && 'Dashboard'}
+              {loc.pathname === '/admin/products' && 'Products'}
+              {loc.pathname === '/admin/customers' && 'Customers'}
+              {loc.pathname === '/admin/orders' && 'Orders'}
+            </h1>
+            <button onClick={() => navigate('/order')} className="text-xs text-[#6E6E73] hover:text-[#1D1D1F] transition-colors md:hidden flex items-center gap-1">
+              <ArrowLeft size={14} /> Menu
+            </button>
+          </div>
+        </div>
+        <div className="flex-1 overflow-y-auto">
+          <div className="max-w-6xl mx-auto p-4 md:p-6">
+            {children}
+          </div>
         </div>
       </main>
 

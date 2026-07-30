@@ -34,10 +34,7 @@ export default function Dashboard() {
   return (
     <div>
       <div className="flex justify-between items-center mb-4">
-        <div>
-          <h1 className="text-xl font-bold text-[#1D1D1F]">Dashboard</h1>
-          <p className="text-sm text-[#6E6E73]">{todayOrders.length} orders today</p>
-        </div>
+        <p className="text-sm text-[#6E6E73]">{todayOrders.length} orders today</p>
         <span className="glass px-3 py-1.5 rounded-full text-xs text-[#6E6E73]">{new Date().toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}</span>
       </div>
 
