@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { Check, Printer, Home, User, ClipboardList } from 'lucide-react'
 import { useApp } from '../../contexts/AppContext'
 import OrderTracker from '../../components/OrderTracker'
+import RatingPanel from '../../components/RatingPanel'
 
 export default function Receipt() {
   const navigate = useNavigate()
@@ -42,6 +43,10 @@ export default function Receipt() {
 
         <div className="mb-4">
           <OrderTracker order={order} />
+        </div>
+
+        <div className="mb-4">
+          <RatingPanel order={order} />
         </div>
 
         <div className="glass-card p-5 mb-4">

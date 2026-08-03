@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { Search, ChevronDown, Clock, ChefHat, CheckCircle, XCircle } from 'lucide-react'
 import { useApp } from '../../contexts/AppContext'
 import OrderTracker from '../../components/OrderTracker'
+import RatingPanel from '../../components/RatingPanel'
 
 const statusColors = {
   pending: { bg: 'bg-[#D4A83C]/10', text: 'text-[#D4A83C]', icon: Clock },
@@ -96,7 +97,10 @@ export default function MyOrders() {
                       </div>
                     ))}
                   </div>
-                  <OrderTracker order={order} />
+                  <div className="space-y-3">
+                    <OrderTracker order={order} />
+                    <RatingPanel order={order} />
+                  </div>
                 </div>
               )}
             </div>

@@ -11,6 +11,7 @@ import MasterCustomer from './pages/admin/MasterCustomer'
 import ListOrders from './pages/admin/ListOrders'
 import Dashboard from './pages/admin/Dashboard'
 import PwaInstallPrompt from './components/PwaInstallPrompt'
+import OrderReadyAlert from './components/OrderReadyAlert'
 import './index.css'
 
 if ('serviceWorker' in navigator) {
@@ -35,6 +36,7 @@ createRoot(document.getElementById('root')).render(
             <Route path="/admin" element={<Dashboard />} />
           </Routes>
         </App>
+        <OrderReadyAlert />
         <PwaInstallPrompt />
       </AppProvider>
     </BrowserRouter>

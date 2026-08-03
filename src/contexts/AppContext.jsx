@@ -1,10 +1,13 @@
-import { createContext, useContext, useReducer, useCallback } from 'react'
+import { createContext, useContext, useReducer, useCallback, useEffect } from 'react'
 import { products as defaultProducts, customers as defaultCustomers, orders as defaultOrders } from '../data/mockData'
 
 const AppContext = createContext()
+const STORAGE_KEY = 'simple-ordering-app-state'
 
 function reducer(state, action) {
   switch (action.type) {
+    case 'HYDRATE':
+      return { ...initialState, ...action.payload }
     case 'SET_ACTIVE_CATEGORY':
       return { ...state, activeCategory: action.payload }
     case 'ADD_TO_CART': {
@@ -44,8 +47,17 @@ function reducer(state, action) {
       return { ...state, orders: [newOrder, ...state.orders], cart: [], showCart: false, lastOrder: newOrder, phoneInput: '', customerName: '', identifiedCustomer: null }
     }
     case 'UPDATE_ORDER_STATUS': {
-      return { ...state, orders: state.orders.map(o => o.id === action.payload.orderId ? { ...o, status: action.payload.status } : o) }
+      const orders = state.orders.map(o => o.id === action.payload.orderId ? { ...o, status: action.payload.status } : o)
+      const updated = orders.find(o => o.id === action.payload.orderId)
+      return { ...state, orders, lastOrder: state.lastOrder && state.lastOrder.id === action.payload.orderId ? updated : state.lastOrder }
     }
+    case 'RATE_ORDER':
+      return {
+        ...state,
+        orders: state.orders.map(o => o.id === action.payload.orderId
+          ? { ...o, rating: action.payload.rating, review: action.payload.review || '', reviewedAt: new Date().toISOString() }
+          : o),
+      }
     case 'SET_LAST_ORDER':
       return { ...state, lastOrder: action.payload }
     case 'ADD_PRODUCT':
@@ -82,7 +94,29 @@ const initialState = {
 }
 
 export function AppProvider({ children }) {
-  const [state, dispatch] = useReducer(reducer, initialState)
+  const [state, dispatch] = useReducer(reducer, undefined, () => {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY)
+      if (saved) return { ...initialState, ...JSON.parse(saved) }
+    } catch (e) {}
+    return initialState
+  })
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state))
+    } catch (e) {}
+  }, [state])
+
+  useEffect(() => {
+    const onStorage = (e) => {
+      if (e.key === STORAGE_KEY && e.newValue) {
+        try { dispatch({ type: 'HYDRATE', payload: JSON.parse(e.newValue) }) } catch { /* ignore */ }
+      }
+    }
+    window.addEventListener('storage', onStorage)
+    return () => window.removeEventListener('storage', onStorage)
+  }, [])
 
   const identifyCustomer = useCallback((phone) => {
     const found = state.customers.find(c => c.phone === phone)

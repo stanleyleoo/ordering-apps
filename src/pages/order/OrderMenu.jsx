@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { ShoppingCart, Plus, Minus, X, ChevronRight, Phone, User, Store, Minus as MinusIcon } from 'lucide-react'
+import { ShoppingCart, Plus, Minus, X, ChevronRight, Phone, User, Store, Minus as MinusIcon, Trash2 } from 'lucide-react'
 import { useApp } from '../../contexts/AppContext'
 import { categories, paymentMethods } from '../../data/mockData'
 
@@ -166,14 +166,16 @@ function CartDrawer({ open, onClose }) {
 }
 
 function ProductDetail({ product, onClose }) {
-  const { dispatch } = useApp()
-  const [qty, setQty] = useState(1)
+  const { state, dispatch } = useApp()
+  const inCart = product ? state.cart.find(i => i.productId === product.id) : null
+  const [qty, setQty] = useState(inCart?.qty || 1)
 
   const handleAdd = () => {
-    dispatch({ type: 'ADD_TO_CART', payload: { ...product, qty: 0 } })
-    for (let i = 0; i < qty; i++) {
+    if (!product) return
+    if (!inCart && qty > 0) {
       dispatch({ type: 'ADD_TO_CART', payload: product })
     }
+    dispatch({ type: 'UPDATE_QTY', payload: { productId: product.id, qty } })
     onClose()
   }
 
@@ -191,6 +193,11 @@ function ProductDetail({ product, onClose }) {
           {product.bestseller && (
             <span className="absolute top-3 left-3 bg-[#D4A83C] text-white text-xs font-bold px-3 py-1 rounded-full shadow">Best Seller</span>
           )}
+          {inCart && inCart.qty > 0 && (
+            <span className="absolute bottom-3 left-3 bg-[#E8652D]/90 backdrop-blur-sm text-white text-xs font-bold px-3 py-1 rounded-full shadow flex items-center gap-1">
+              <ShoppingCart size={12} /> {inCart.qty} in cart
+            </span>
+          )}
         </div>
         <div className="p-5 space-y-4">
           <div>
@@ -201,13 +208,19 @@ function ProductDetail({ product, onClose }) {
           <div className="flex items-center justify-between pt-2 border-t border-white/20">
             <span className="text-2xl font-bold text-[#E8652D]">Rp {product.price.toLocaleString()}</span>
             <div className="flex items-center gap-3">
-              <button onClick={() => setQty(q => Math.max(1, q - 1))} className="w-10 h-10 rounded-full bg-white/30 flex items-center justify-center hover:bg-white/50 transition"><MinusIcon size={18} /></button>
+              <button onClick={() => setQty(q => Math.max(0, q - 1))} className="w-10 h-10 rounded-full bg-white/30 flex items-center justify-center hover:bg-white/50 transition"><MinusIcon size={18} /></button>
               <span className="w-8 text-center font-bold text-lg text-[#1D1D1F]">{qty}</span>
               <button onClick={() => setQty(q => q + 1)} className="w-10 h-10 rounded-full bg-white/30 flex items-center justify-center hover:bg-white/50 transition"><Plus size={18} /></button>
             </div>
           </div>
-          <button onClick={handleAdd} className="btn-primary w-full flex items-center justify-center gap-2 py-3.5">
-            <ShoppingCart size={18} /> Add to Cart &mdash; Rp {(product.price * qty).toLocaleString()}
+          {inCart && inCart.qty > 0 && qty !== inCart.qty && (
+            <p className="text-xs text-[#E8652D]">Currently {inCart.qty} in cart &mdash; qty will be updated to {qty}</p>
+          )}
+          <button onClick={handleAdd} disabled={!inCart && qty === 0}
+            className="btn-primary w-full flex items-center justify-center gap-2 py-3.5 disabled:opacity-40 disabled:cursor-not-allowed">
+            {inCart ? (qty === 0 ? <><Trash2 size={18} /> Remove from Cart</> : <><ShoppingCart size={18} /> Update Cart &mdash; Rp {(product.price * qty).toLocaleString()}</>) : (
+              <><ShoppingCart size={18} /> Add to Cart &mdash; Rp {(product.price * qty).toLocaleString()}</>
+            )}
           </button>
         </div>
       </div>
@@ -252,26 +265,50 @@ export default function OrderMenu() {
       </div>
 
       <div className="grid grid-cols-2 gap-3 animate-fadeIn">
-        {filtered.map(product => (
-          <div key={product.id} onClick={() => setSelectedProduct(product)} className="glass-card overflow-hidden group cursor-pointer active:scale-[0.98] transition-transform">
-            <div className="relative aspect-square overflow-hidden">
-              <img src={product.image} alt={product.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
-              {product.bestseller && (
-                <span className="absolute top-2 left-2 bg-[#D4A83C] text-white text-[10px] font-bold px-2 py-0.5 rounded-full shadow">Best Seller</span>
-              )}
-              <button onClick={(e) => { e.stopPropagation(); dispatch({ type: 'ADD_TO_CART', payload: product }) }}
-                className="absolute bottom-2 right-2 w-10 h-10 rounded-full bg-[#E8652D] text-white flex items-center justify-center shadow-lg hover:bg-[#D4551F] transition active:scale-90"
-              >
-                <Plus size={18} />
-              </button>
+        {filtered.map(product => {
+          const inCart = state.cart.find(i => i.productId === product.id)
+          const qty = inCart?.qty || 0
+          return (
+            <div key={product.id} onClick={() => setSelectedProduct(product)} className="glass-card overflow-hidden group cursor-pointer active:scale-[0.98] transition-transform">
+              <div className="relative aspect-square overflow-hidden">
+                <img src={product.image} alt={product.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+                {product.bestseller && (
+                  <span className="absolute top-2 left-2 bg-[#D4A83C] text-white text-[10px] font-bold px-2 py-0.5 rounded-full shadow">Best Seller</span>
+                )}
+                {qty > 0 && (
+                  <span className="absolute top-2 right-2 min-w-6 h-6 px-1.5 rounded-full bg-[#E8652D] text-white text-xs font-bold flex items-center justify-center shadow-lg animate-pop">
+                    {qty}
+                  </span>
+                )}
+                {qty === 0 ? (
+                  <button onClick={(e) => { e.stopPropagation(); dispatch({ type: 'ADD_TO_CART', payload: product }) }}
+                    className="absolute bottom-2 right-2 w-10 h-10 rounded-full bg-[#E8652D] text-white flex items-center justify-center shadow-lg hover:bg-[#D4551F] transition active:scale-90">
+                    <Plus size={18} />
+                  </button>
+                ) : (
+                  <div onClick={(e) => e.stopPropagation()}
+                    className="absolute bottom-2 right-2 flex items-center gap-1 glass rounded-full p-1 shadow-lg"
+                    style={{ backdropFilter: 'blur(16px)' }}>
+                    <button onClick={() => dispatch({ type: 'UPDATE_QTY', payload: { productId: product.id, qty: qty - 1 } })}
+                      className="w-8 h-8 rounded-full bg-white/40 flex items-center justify-center text-[#1D1D1F] hover:bg-white/60 transition active:scale-90">
+                      <Minus size={15} />
+                    </button>
+                    <span className="w-6 text-center font-bold text-sm text-[#1D1D1F]">{qty}</span>
+                    <button onClick={() => dispatch({ type: 'ADD_TO_CART', payload: product })}
+                      className="w-8 h-8 rounded-full bg-[#E8652D] flex items-center justify-center text-white hover:bg-[#D4551F] transition active:scale-90">
+                      <Plus size={15} />
+                    </button>
+                  </div>
+                )}
+              </div>
+              <div className="p-3">
+                <p className="font-semibold text-sm text-[#1D1D1F] leading-tight">{product.name}</p>
+                <p className="text-xs text-[#6E6E73] mt-1 line-clamp-1">{product.description}</p>
+                <p className="font-bold text-sm text-[#E8652D] mt-2">Rp {product.price.toLocaleString()}</p>
+              </div>
             </div>
-            <div className="p-3">
-              <p className="font-semibold text-sm text-[#1D1D1F] leading-tight">{product.name}</p>
-              <p className="text-xs text-[#6E6E73] mt-1 line-clamp-1">{product.description}</p>
-              <p className="font-bold text-sm text-[#E8652D] mt-2">Rp {product.price.toLocaleString()}</p>
-            </div>
-          </div>
-        ))}
+          )
+        })}
       </div>
 
       {cartCount > 0 && (
@@ -288,7 +325,7 @@ export default function OrderMenu() {
         </button>
       )}
 
-      <ProductDetail product={selectedProduct} onClose={() => setSelectedProduct(null)} />
+      <ProductDetail key={selectedProduct?.id || 'none'} product={selectedProduct} onClose={() => setSelectedProduct(null)} />
       <CartDrawer open={showCart} onClose={() => setShowCart(false)} />
     </div>
   )
