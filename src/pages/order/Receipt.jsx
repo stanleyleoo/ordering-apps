@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Check, Printer, Home, User } from 'lucide-react'
+import { Check, Printer, Home, User, ClipboardList } from 'lucide-react'
 import { useApp } from '../../contexts/AppContext'
+import OrderTracker from '../../components/OrderTracker'
 
 export default function Receipt() {
   const navigate = useNavigate()
@@ -12,9 +13,7 @@ export default function Receipt() {
   useEffect(() => { setShow(true) }, [])
 
   useEffect(() => {
-    if (!order) { navigate('/order'); return }
-    const timer = setTimeout(() => navigate('/order'), 30000)
-    return () => clearTimeout(timer)
+    if (!order) navigate('/order')
   }, [order, navigate])
 
   if (!order) return null
@@ -39,6 +38,10 @@ export default function Receipt() {
             <p className="text-xs text-[#6E6E73]">Order ID</p>
             <p className="text-xl font-bold text-[#1D1D1F]">{order.id}</p>
           </div>
+        </div>
+
+        <div className="mb-4">
+          <OrderTracker order={order} />
         </div>
 
         <div className="glass-card p-5 mb-4">
@@ -88,7 +91,9 @@ export default function Receipt() {
             <Printer size={18} />
           </button>
         </div>
-        <p className="text-center text-xs text-[#6E6E73] mt-4">Auto-returning to menu in 30s</p>
+        <button onClick={() => navigate('/orders')} className="mt-3 w-full btn-ghost flex items-center justify-center gap-2 text-sm text-[#6E6E73]">
+          <ClipboardList size={16} /> Track your orders
+        </button>
       </div>
     </div>
   )

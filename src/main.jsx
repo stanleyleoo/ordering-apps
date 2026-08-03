@@ -5,6 +5,7 @@ import { AppProvider } from './contexts/AppContext'
 import App from './App'
 import OrderMenu from './pages/order/OrderMenu'
 import Receipt from './pages/order/Receipt'
+import MyOrders from './pages/order/MyOrders'
 import MasterProduct from './pages/admin/MasterProduct'
 import MasterCustomer from './pages/admin/MasterCustomer'
 import ListOrders from './pages/admin/ListOrders'
@@ -27,6 +28,7 @@ createRoot(document.getElementById('root')).render(
             <Route path="/" element={<Navigate to="/order" replace />} />
             <Route path="/order" element={<OrderMenu />} />
             <Route path="/receipt" element={<Receipt />} />
+            <Route path="/orders" element={<MyOrders />} />
             <Route path="/admin/products" element={<MasterProduct />} />
             <Route path="/admin/customers" element={<MasterCustomer />} />
             <Route path="/admin/orders" element={<ListOrders />} />

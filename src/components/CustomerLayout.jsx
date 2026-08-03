@@ -7,6 +7,7 @@ export default function CustomerLayout({ children }) {
 
   const nav = [
     { path: '/order', label: 'Menu', icon: Home },
+    { path: '/orders', label: 'My Orders', icon: ClipboardList },
     { path: '/admin', label: 'Admin', icon: Settings },
   ]
 
