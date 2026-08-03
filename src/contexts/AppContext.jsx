@@ -98,14 +98,14 @@ export function AppProvider({ children }) {
     try {
       const saved = localStorage.getItem(STORAGE_KEY)
       if (saved) return { ...initialState, ...JSON.parse(saved) }
-    } catch (e) {}
+    } catch { /* ignore corrupt storage */ }
     return initialState
   })
 
   useEffect(() => {
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(state))
-    } catch (e) {}
+    } catch { /* storage full */ }
   }, [state])
 
   useEffect(() => {

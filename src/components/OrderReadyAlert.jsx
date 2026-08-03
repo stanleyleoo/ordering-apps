@@ -23,7 +23,7 @@ function playChime() {
       osc.stop(start + 0.65)
     })
     setTimeout(() => ctx.close(), 1500)
-  } catch (e) {}
+  } catch { /* audio not available */ }
 }
 
 export default function OrderReadyAlert() {

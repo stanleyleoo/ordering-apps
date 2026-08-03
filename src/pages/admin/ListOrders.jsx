@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Clock, CheckCircle, XCircle, ChefHat, Search, Filter } from 'lucide-react'
+import { Clock, CheckCircle, XCircle, ChefHat, Search } from 'lucide-react'
 import { useApp } from '../../contexts/AppContext'
 
 const statusColors = {

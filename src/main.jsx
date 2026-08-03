@@ -9,6 +9,7 @@ import MyOrders from './pages/order/MyOrders'
 import MasterProduct from './pages/admin/MasterProduct'
 import MasterCustomer from './pages/admin/MasterCustomer'
 import ListOrders from './pages/admin/ListOrders'
+import Reports from './pages/admin/Reports'
 import Dashboard from './pages/admin/Dashboard'
 import PwaInstallPrompt from './components/PwaInstallPrompt'
 import OrderReadyAlert from './components/OrderReadyAlert'
@@ -33,6 +34,7 @@ createRoot(document.getElementById('root')).render(
             <Route path="/admin/products" element={<MasterProduct />} />
             <Route path="/admin/customers" element={<MasterCustomer />} />
             <Route path="/admin/orders" element={<ListOrders />} />
+            <Route path="/admin/reports" element={<Reports />} />
             <Route path="/admin" element={<Dashboard />} />
           </Routes>
         </App>

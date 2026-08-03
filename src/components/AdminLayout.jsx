@@ -1,11 +1,12 @@
 import { useNavigate, useLocation } from 'react-router-dom'
-import { LayoutDashboard, Package, Users, ClipboardList, ArrowLeft } from 'lucide-react'
+import { LayoutDashboard, Package, Users, ClipboardList, BarChart3, ArrowLeft } from 'lucide-react'
 
 const nav = [
   { path: '/admin', label: 'Dashboard', icon: LayoutDashboard },
   { path: '/admin/products', label: 'Products', icon: Package },
   { path: '/admin/customers', label: 'Customers', icon: Users },
   { path: '/admin/orders', label: 'Orders', icon: ClipboardList },
+  { path: '/admin/reports', label: 'Reports', icon: BarChart3 },
 ]
 
 export default function AdminLayout({ children }) {
@@ -52,6 +53,7 @@ export default function AdminLayout({ children }) {
               {loc.pathname === '/admin/products' && 'Products'}
               {loc.pathname === '/admin/customers' && 'Customers'}
               {loc.pathname === '/admin/orders' && 'Orders'}
+              {loc.pathname === '/admin/reports' && 'Reports'}
             </h1>
             <button onClick={() => navigate('/order')} className="text-xs text-[#6E6E73] hover:text-[#1D1D1F] transition-colors md:hidden flex items-center gap-1">
               <ArrowLeft size={14} /> Menu
